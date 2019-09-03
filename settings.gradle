@@ -1,1 +1,1 @@
-include ':app', ':simplesip'
+include ':app', ':simplesip', ':gb28181library'

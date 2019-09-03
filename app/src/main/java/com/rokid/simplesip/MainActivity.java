@@ -1,8 +1,12 @@
 package com.rokid.simplesip;
 
+import android.Manifest;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 
+import com.autulin.gb28181library.JNIBridge;
 import com.rokid.simplesip.tools.Logger;
 import com.rokid.simplesip.ua.Receiver;
 import com.rokid.simplesip.ua.SipParam;
@@ -15,11 +19,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+        Logger.i("JNIBridge:"+JNIBridge.stringFromJNI());
+
+        ActivityCompat.requestPermissions(this, new String[]{
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.CAMERA},1);
+
+
         //---- 账号密码
         SipParam param = AccountConfigHelper.getInstance().getAccountConfig(AccountConfigHelper.TAG.HIK);
 
@@ -36,6 +44,10 @@ public class MainActivity extends AppCompatActivity {
             public void onCallAccepted(UserAgent agent, UserAgent.onRingParam param) {
                 Logger.d("MainActivity onCallAccepted isstart=");
                 Logger.i(param.toString());
+                Intent intent = new Intent(MainActivity.this, DemoActivity.class);
+                intent.putExtra("url", param.remote_media_address);
+                intent.putExtra("port", param.remote_video_port);
+                startActivity(intent);
             }
 
             @Override
@@ -46,10 +58,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onDestroy() {
         Receiver.finishSip();
+        super.onDestroy();
     }
-
-
 }

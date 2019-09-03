@@ -43,6 +43,7 @@ import com.rokid.simplesip.tools.Log;
 import com.rokid.simplesip.tools.LogLevel;
 import com.rokid.simplesip.tools.Parser;
 
+import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -1189,7 +1190,7 @@ public class UserAgent extends CallListenerAdapter {
         void onCallTimeout(UserAgent agent);
     }
 
-    public static class onRingParam {
+    public static class onRingParam implements Serializable {
         public Call call;
         public SessionDescriptor remote_sdp;
         public SessionDescriptor local_sdp;
