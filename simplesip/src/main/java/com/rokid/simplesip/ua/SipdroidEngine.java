@@ -686,32 +686,32 @@ public class SipdroidEngine implements RegisterAgentListener, UserAgent.OnRingCa
 		if(sipdroidEngineCallback!=null){
 			sipdroidEngineCallback.onCallAccepted(agent,param);
 		}
-		Log.e("ringCallback", "onCallRinging");
+		Log.e("ringCallback", "onCallConfirmed");
 	}
 
 	@Override
 	public void onCallReInviteAccepted(UserAgent agent) {
-		Log.e("ringCallback", "onCallRinging");
+		Log.e("ringCallback", "onCallReInviteAccepted");
 	}
 
 	@Override
 	public void onCallReInviteRefused(UserAgent agent) {
-		Log.e("ringCallback", "onCallRinging");
+		Log.e("ringCallback", "onCallReInviteRefused");
 	}
 
 	@Override
 	public void onCallRefused(UserAgent agent) {
-		Log.e("ringCallback", "onCallRinging");
+		Log.e("ringCallback", "onCallRefused");
 	}
 
 	@Override
 	public void onCallRedirection(UserAgent agent) {
-		Log.e("ringCallback", "onCallRinging");
+		Log.e("ringCallback", "onCallRedirection");
 	}
 
 	@Override
 	public void onCallCanceling(UserAgent agent) {
-		Log.e("ringCallback", "onCallRinging");
+		Log.e("ringCallback", "onCallCanceling");
 	}
 
 	@Override
@@ -719,17 +719,17 @@ public class SipdroidEngine implements RegisterAgentListener, UserAgent.OnRingCa
 		if(sipdroidEngineCallback!=null){
 			sipdroidEngineCallback.onCallClosing();
 		}
-		Log.e("ringCallback", "onCallRinging");
+		Log.e("ringCallback", "onCallClosing");
 	}
 
 	@Override
 	public void onCallClosed(UserAgent agent) {
-		Log.e("ringCallback", "onCallRinging");
+		Log.e("ringCallback", "onCallClosed");
 	}
 
 	@Override
 	public void onCallTimeout(UserAgent agent) {
-		Log.e("ringCallback", "onCallRinging");
+		Log.e("ringCallback", "onCallTimeout");
 	}
 
 	public void setSipdroidEngineCallback(SipdroidEngineCallback sipdroidEngineCallback){

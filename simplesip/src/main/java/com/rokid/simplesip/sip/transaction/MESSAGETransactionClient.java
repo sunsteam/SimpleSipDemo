@@ -34,8 +34,8 @@ public class MESSAGETransactionClient extends Transaction {
      */
     public MESSAGETransactionClient(SipProvider sip_provider, TransactionClientGB28181Listener listener, UserAgentProfile user_profile) {
         super(sip_provider);
-        this.user_profile=user_profile;
-        this.listener=listener;
+        this.user_profile = user_profile;
+        this.listener = listener;
     }
 
 
@@ -45,11 +45,13 @@ public class MESSAGETransactionClient extends Transaction {
     }
 
     public void onReceivedMessage(SipProvider provider, Message msg) {
-        android.util.Log.d("aaaa", "aaaaa" + msg);
+        Logger.i("xmlCallback", "receiveMessage");
+        Logger.i("xmlCallback", msg.toString());
+
         if (msg.isRequest()) {
             String req_method = msg.getRequestLine().getMethod();
             if (req_method.equals(SipMethods.MESSAGE)) {
-                isMessage=true;
+                isMessage = true;
 
                 request = new Message(msg);
                 connection_id = request.getConnectionId();
@@ -58,42 +60,46 @@ public class MESSAGETransactionClient extends Transaction {
                 sip_provider
                         .removeSipProviderListener(new TransactionIdentifier(
                                 SipMethods.INVITE));*/
-                String str=msg.getBody();
+                String str = msg.getBody();
 
-                AuthorizationHeader ah=msg.getAuthorizationHeader();
+                Logger.i("xmlCallback", str);
 
-                String sn=str.substring(str.indexOf("<SN>")+4,str.indexOf("</SN>"));
+                AuthorizationHeader ah = msg.getAuthorizationHeader();
+
+                String sn = str.substring(str.indexOf("<SN>") + 4, str.indexOf("</SN>"));
                 Message msg200 = MessageFactory.createResponse(
                         request, 200, SipResponses.reasonOf(200), null);
                 String contact_user = request.getFromHeader().getNameAddress().getAddress().getUserName();
 
                 String channelID = user_profile.username;
-//                channelID = "33080002001326030001";
+                //channelID = "33080002001326030001";
 
-                String IPAddress =  "192.168.1.164";
+                String ipAddress = "144.34.221.165";
+                int port = user_profile.video_port;
                 if (!TextUtils.isEmpty(user_profile.contact_url)) {
-                    IPAddress = new NameAddress(user_profile.contact_url).getAddress().getHost();
+                    ipAddress = new NameAddress(user_profile.contact_url).getAddress().getHost();
+                    port = new NameAddress(user_profile.contact_url).getAddress().getPort();
                 }
 
-                String cmdType = XMLUtil.getSubUtilSimple( str,"<CmdType>(.*?)</CmdType>");
-                Logger.d("Recv the MESSAGE cmdType="+cmdType);
+                String cmdType = XMLUtil.getSubUtilSimple(str, "<CmdType>(.*?)</CmdType>");
+                Logger.d("Recv the MESSAGE cmdType=" + cmdType);
 
-                if(cmdType.equals("Catalog")){
+                if (cmdType.equals("Catalog")) {
                     DeviceItem item = new DeviceItem();
                     item.setDeviceID(channelID);
-                    item.setName("RokidName");
-                    item.setManufacturer("Rokid");
-                    item.setModel("Rokid");
-                    item.setOwner("Rokid");
-                    item.setCivilCode("01234567");
-                    item.setAddress("Rokid");
+                    item.setName("testName");
+                    item.setManufacturer("SYX");
+                    item.setModel("SYX");
+                    item.setOwner("SYX");
+                    item.setCivilCode("110");
+                    item.setAddress("ShangHai");
                     item.setParental("0");
                     item.setSafetyWay("0");
                     item.setRegisterWay("1");
                     item.setSecrecy("0");
-                    item.setIPAddress(IPAddress);
-                    item.setPort("80");
-                    item.setPassword("9999");
+                    item.setIPAddress(ipAddress);
+                    item.setPort(String.valueOf(port));
+                    item.setPassword(user_profile.passwd);
                     item.setStatus("ON");
 
                     List<DeviceItem> itemList = new ArrayList<>();
@@ -102,7 +108,7 @@ public class MESSAGETransactionClient extends Transaction {
                     deviceList.setDeviceList(itemList);
                     deviceList.setNum(String.valueOf(itemList.size()));
 
-                    ResponseMessage responseMessage=new ResponseMessage();
+                    ResponseMessage responseMessage = new ResponseMessage();
                     responseMessage.setCmdType(cmdType);
                     responseMessage.setSN(sn);
                     responseMessage.setDeviceID(channelID);
@@ -119,11 +125,11 @@ public class MESSAGETransactionClient extends Transaction {
                             body
                     );
                     sip_provider.sendMessage(msg200, connection_id);
-                    sip_provider.sendMessage(messageRequest,connection_id);
-                    if(listener!=null){
-                        listener.onTransGB28181SuccessResponse(this,request);
+                    sip_provider.sendMessage(messageRequest, connection_id);
+                    if (listener != null) {
+                        listener.onTransGB28181SuccessResponse(this, request);
                     }
-                }else if(cmdType.equals("DeviceInfo")){
+                } else if (cmdType.equals("DeviceInfo")) {
 
                     ResponseMessage responseMessage = new ResponseMessage();
                     responseMessage.setCmdType(cmdType);
@@ -144,32 +150,9 @@ public class MESSAGETransactionClient extends Transaction {
                             XMLUtil.XML_MANSCDP_TYPE,
                             body);
                     sip_provider.sendMessage(msg200, connection_id);
-                    sip_provider.sendMessage(messageRequest,connection_id);
+                    sip_provider.sendMessage(messageRequest, connection_id);
 
-                }else if(cmdType.equals("Broadcast")){
-
-                    NameAddress contact = new NameAddress(new SipURL(contact_user,
-                            sip_provider.getViaAddress(), sip_provider.getPort()));
-
-                    ResponseMessage responseMessage = new ResponseMessage();
-                    responseMessage.setCmdType(cmdType);
-                    responseMessage.setSN(sn);
-                    responseMessage.setDeviceID(user_profile.username);
-                    responseMessage.setResult("OK");
-                    String body = XMLUtil.convertBeanToXml(responseMessage);
-
-                    Message messageRequest = MessageFactory.createMessageRequest(sip_provider,
-                            request.getFromHeader().getNameAddress(),
-                            request.getToHeader().getNameAddress(),
-                            null,
-                            XMLUtil.XML_MANSCDP_TYPE,
-                            body
-                            );
-
-                    sip_provider.sendMessage(msg200, connection_id);
-                    sip_provider.sendMessage(messageRequest,connection_id);
-
-                }else if(cmdType.equals("DeviceControl")){
+                } else if (cmdType.equals("Broadcast")) {
 
                     NameAddress contact = new NameAddress(new SipURL(contact_user,
                             sip_provider.getViaAddress(), sip_provider.getPort()));
@@ -190,10 +173,32 @@ public class MESSAGETransactionClient extends Transaction {
                     );
 
                     sip_provider.sendMessage(msg200, connection_id);
-                    sip_provider.sendMessage(messageRequest,connection_id);
+                    sip_provider.sendMessage(messageRequest, connection_id);
+
+                } else if (cmdType.equals("DeviceControl")) {
+
+                    NameAddress contact = new NameAddress(new SipURL(contact_user,
+                            sip_provider.getViaAddress(), sip_provider.getPort()));
+
+                    ResponseMessage responseMessage = new ResponseMessage();
+                    responseMessage.setCmdType(cmdType);
+                    responseMessage.setSN(sn);
+                    responseMessage.setDeviceID(user_profile.username);
+                    responseMessage.setResult("OK");
+                    String body = XMLUtil.convertBeanToXml(responseMessage);
+
+                    Message messageRequest = MessageFactory.createMessageRequest(sip_provider,
+                            request.getFromHeader().getNameAddress(),
+                            request.getToHeader().getNameAddress(),
+                            null,
+                            XMLUtil.XML_MANSCDP_TYPE,
+                            body
+                    );
+
+                    sip_provider.sendMessage(msg200, connection_id);
+                    sip_provider.sendMessage(messageRequest, connection_id);
 
                 }
-
 
 
                 //retransmission_to.halt();

@@ -225,13 +225,11 @@ public class UserAgent extends CallListenerAdapter {
         if (user_profile.audio || !user_profile.video) {
 //			addMediaDescriptor("audio", user_profile.audio_port, c, user_profile.audio_sample_rate);
             //addMediaDescriptor("audio", user_profile.audio_port, c);
-            addMediaDescriptor("audio", user_profile.audio_port,
-                    96, "PS", 90000);
+            addMediaDescriptor("audio", user_profile.audio_port, 96, "PS", 90000);
         }
 
         if (user_profile.video) {
-            addMediaDescriptor("video", user_profile.video_port,
-                    96, "PS", 90000);
+            addMediaDescriptor("video", user_profile.video_port, 96, "PS", 90000);
             //addMediaDescriptor("video", user_profile.video_port, user_profile.video_avp, "h263-1998", 90000);
         }
     }
@@ -387,7 +385,7 @@ public class UserAgent extends CallListenerAdapter {
             return false;
         }
 
-        hangup();
+        //hangup();
 
         call = new ExtendedCall(sip_provider, user_profile.from_url,
                 user_profile.contact_url, user_profile.username,
@@ -1239,6 +1237,22 @@ public class UserAgent extends CallListenerAdapter {
                 if (media.getMedia().equals("video"))
                     remote_video_port = media.getPort();
             }
+        }
+
+        @Override
+        public String toString() {
+            return "onRingParam{" +
+                    "call=" + call +
+                    ", \r\nremote_sdp=" + remote_sdp +
+                    ", \r\nlocal_sdp=" + local_sdp +
+                    ", \r\nvideoDes=" + videoDes +
+                    ", \r\naudioDes=" + audioDes +
+                    ", \r\nlocal_video_port=" + local_video_port +
+                    ", \r\nlocal_audio_port=" + local_audio_port +
+                    ", \r\nremote_audio_port=" + remote_audio_port +
+                    ", \r\nremote_video_port=" + remote_video_port +
+                    ", \r\nremote_media_address='" + remote_media_address + '\'' +
+                    '}';
         }
     }
 }

@@ -20,8 +20,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //"33.192.64.100",  test  Hik12345  ---- 账号密码
-        SipParam param = AccountConfigHelper.getInstance().getAccountConfig(AccountConfigHelper.TAG.OPEN);
+        //---- 账号密码
+        SipParam param = AccountConfigHelper.getInstance().getAccountConfig(AccountConfigHelper.TAG.HIK);
 
         Receiver.initSip(this, param);
         Receiver.engine(this, new Receiver.StateCallback() {
@@ -30,10 +30,12 @@ public class MainActivity extends AppCompatActivity {
                 Logger.d("MainActivity  changeStatus state=" + state);
             }
         });
-        Receiver.engine(this).setSipdroidEngineCallback(new SipdroidEngine.SipdroidEngineCallback() {
+        final SipdroidEngine engine = Receiver.engine(this);
+        engine.setSipdroidEngineCallback(new SipdroidEngine.SipdroidEngineCallback() {
             @Override
             public void onCallAccepted(UserAgent agent, UserAgent.onRingParam param) {
                 Logger.d("MainActivity onCallAccepted isstart=");
+                Logger.i(param.toString());
             }
 
             @Override

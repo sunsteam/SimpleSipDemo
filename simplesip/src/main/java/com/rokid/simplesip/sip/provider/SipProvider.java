@@ -886,8 +886,6 @@ public class SipProvider implements Configurable, TransportListener,
 	 */
 	public ConnectionIdentifier sendMessage(Message msg) {
 
-		printLog("Sending message:\r\n" + msg.toString(), LogLevel.LOWER);
-
 		Logger.d("\n\n>>>>>>>>>>>>>>>>>>>>>\nSipProvider: SendMessage the new message: \n\n" + msg.toString()+"\n");
 
 		// select the transport protocol
