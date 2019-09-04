@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">SimpleSipDemo</string>
+    <string name="hint_host">远程地址</string>
+    <string name="hint_port">远程端口</string>
+    <string name="hint_domain">服务器SIP域</string>
+    <string name="hint_remote_id">服务器SIP_ID</string>
+
 </resources>

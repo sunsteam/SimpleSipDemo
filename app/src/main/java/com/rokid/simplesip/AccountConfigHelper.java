@@ -1,9 +1,13 @@
 package com.rokid.simplesip;
 
-import android.support.annotation.NonNull;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import androidx.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.rokid.simplesip.tools.JSONHelper;
 import com.rokid.simplesip.tools.Logger;
+import com.rokid.simplesip.ua.Settings;
 import com.rokid.simplesip.ua.SipParam;
 
 import java.io.ByteArrayOutputStream;
@@ -41,7 +45,22 @@ public class AccountConfigHelper {
         return instance;
     }
 
-    private AccountConfigHelper() {}
+    private AccountConfigHelper() {
+    }
+
+    public SipParam getSpfAccountCache(SipParam sipParam) {
+        SharedPreferences account = PreferenceManager.getDefaultSharedPreferences(BaseLibrary.getInstance().getContext());
+        if (account.contains(Settings.PREF_USERNAME)
+                && !TextUtils.isEmpty(account.getString(Settings.PREF_USERNAME, ""))) {
+
+            sipParam.setServer(account.getString(Settings.PREF_SERVER, ""));
+            sipParam.setPort(account.getString(Settings.PREF_PORT, ""));
+            sipParam.setUsername(account.getString(Settings.PREF_USERNAME, ""));
+            sipParam.setDomain(account.getString(Settings.PREF_DOMAIN, ""));
+        }
+        return sipParam;
+    }
+
 
     public SipParam getAccountConfig(TAG tag) {
         String tagName = CONFIG_DEFAULT;
@@ -58,9 +77,10 @@ public class AccountConfigHelper {
 
         String configFileName = String.format(FORMAT_CONFIG_ACCOUNT, tagName);
         String internalAppJson = getDefaultJson(configFileName);
-        Logger.d("getAccountConfig internalAppJson="+internalAppJson);
+        Logger.d("getAccountConfig internalAppJson=" + internalAppJson);
         SipParam sipParam = JSONHelper.fromJson(internalAppJson, SipParam.class);
-        Logger.d("getAccountConfig sipParam="+sipParam);
+        SipParam cachedParam = getSpfAccountCache(sipParam);
+        Logger.d("getAccountConfig sipParam=" + cachedParam);
         return sipParam;
     }
 

@@ -1,11 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:divider="@drawable/divider_transparent_8dp"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:showDividers="middle"
     tools:context=".MainActivity">
 
 
-</android.support.constraint.ConstraintLayout>
+    <EditText
+        android:id="@+id/host"
+        style="@style/normal_edit_style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_host"
+        android:imeOptions="actionNext" />
+
+    <EditText
+        android:id="@+id/port"
+        style="@style/normal_edit_style"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_port"
+        android:imeOptions="actionNext" />
+
+    <EditText
+        android:id="@+id/id"
+        style="@style/normal_edit_style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_remote_id"
+        android:imeOptions="actionNext" />
+
+    <EditText
+        android:id="@+id/domain"
+        style="@style/normal_edit_style"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_domain"
+        android:imeOptions="actionDone" />
+
+    <Button
+        android:id="@+id/connect"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="8dp"
+        android:text="connect" />
+
+    <Button
+        android:id="@+id/disconnect"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="32dp"
+        android:text="disconnect" />
+
+    <TextView
+        android:id="@+id/connect_log"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textColor="#777777"
+        android:textSize="13sp" />
+
+</LinearLayout>

@@ -1,14 +1,11 @@
 package com.rokid.simplesip;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.SurfaceView;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 
 import com.autulin.gb28181library.MediaOutput;
 import com.autulin.gb28181library.MediaRecorderBase;
@@ -20,9 +17,7 @@ import java.io.IOException;
 public class DemoActivity extends AppCompatActivity implements
         MediaRecorderBase.OnErrorListener, MediaRecorderBase.OnPreparedListener {
 
-    private Button mButton;
     private SurfaceView mSurfaceView;
-    private RelativeLayout bottomLayout;
 
     private MediaRecorderNative mMediaRecorder;
     private MediaOutput mediaOutput;
@@ -36,45 +31,21 @@ public class DemoActivity extends AppCompatActivity implements
         initData();
         initView();
 
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mMediaRecorder != null) {
-                    if (!mMediaRecorder.mRecording) {
-                        mButton.setText("点击结束");
-                        mMediaRecorder.startMux();
-                    } else {
-                        mButton.setText("点击开始");
-                        mMediaRecorder.endMux();
-                    }
-                }
-                //                new Thread(runnable).start();
-            }
-        });
-
         try {
             Log.e("log", "path: " + MediaRecorderBase.getLogOutPutPath());
             Runtime.getRuntime().exec("logcat -f " + MediaRecorderBase.getLogOutPutPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        //初始化
-        if (mMediaRecorder == null) {
-            initMediaRecorder();
-        } else {
-            mMediaRecorder.prepare();
-        }
+        initMediaRecorder();
+        mMediaRecorder.startMux();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mMediaRecorder.endMux();
         // 释放资源
         mMediaRecorder.release();
     }
@@ -90,9 +61,7 @@ public class DemoActivity extends AppCompatActivity implements
     }
 
     private void initView() {
-        mButton = findViewById(R.id.start_btn);
         mSurfaceView = findViewById(R.id.record_preview);
-        bottomLayout = findViewById(R.id.bottom_lt);
     }
 
     /**
@@ -100,7 +69,7 @@ public class DemoActivity extends AppCompatActivity implements
      */
     private void initMediaRecorder() {
 
-        String url = getIntent().getStringExtra("url");
+        String url = getIntent().getStringExtra("host");
         int port = getIntent().getIntExtra("port", 8888);
 
 
@@ -130,7 +99,6 @@ public class DemoActivity extends AppCompatActivity implements
     private void initSurfaceView() {
         final int w = DeviceUtils.getScreenWidth(this);
         // 避免摄像头的转换，只取上面h部分
-        ((RelativeLayout.LayoutParams) bottomLayout.getLayoutParams()).topMargin = (int) (w / (MediaRecorderBase.SMALL_VIDEO_HEIGHT / (MediaRecorderBase.SMALL_VIDEO_WIDTH * 1.0f)));
         int width = w;
         int height = (int) (w * (MediaRecorderBase.mSupportedPreviewWidth * 1.0f)) / MediaRecorderBase.SMALL_VIDEO_HEIGHT;
         Log.e("debug", "initSurfaceView: w=" + width + ",h=" + height);
